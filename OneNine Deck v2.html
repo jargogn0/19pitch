@@ -1,0 +1,1115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>OneNine · Session 2</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="deck-stage.js"></script>
+<style>
+  :root{
+    --green:#1E5F3E; --green-soft:#CBE0D2;
+    --yellow:#E8B73A; --yellow-soft:#F6E4B2;
+    --navy:#0F2847;
+    --red:#B8342B; --red-soft:#EFCFCB;
+    --cream:#F8F5EE; --cream-2:#F1ECE0;
+    --ink:#1A1A1A; --ink-muted:#55524B; --ink-faint:#8a8678;
+    --rule:#D9D3C3;
+  }
+  html,body{margin:0;padding:0;background:#000;}
+  deck-stage{background:#000;}
+  deck-stage > section{
+    font-family:'Inter',system-ui,sans-serif;
+    color:var(--ink); background:var(--cream); overflow:hidden;
+    position:relative; z-index: 0;
+    padding:120px 180px 120px 180px;
+    display:flex; flex-direction:column;
+    opacity: 0; transform: scale(0.97) translateY(15px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  deck-stage > section[data-deck-active] {
+    opacity: 1; transform: scale(1) translateY(0);
+  }
+  deck-stage > section::before {
+    content: ""; position: absolute; top: -30%; left: -15%; width: 70%; height: 70%;
+    background: radial-gradient(circle, var(--green-soft) 0%, transparent 60%);
+    opacity: 0.25; filter: blur(120px); z-index: -1; pointer-events: none;
+    transition: opacity 1.5s ease;
+  }
+  deck-stage > section::after {
+    content: ""; position: absolute; bottom: -30%; right: -15%; width: 70%; height: 70%;
+    background: radial-gradient(circle, var(--yellow-soft) 0%, transparent 60%);
+    opacity: 0.15; filter: blur(140px); z-index: -1; pointer-events: none;
+    transition: opacity 1.5s ease;
+  }
+
+  /* === Minimal chrome === */
+  .chrome-top{
+    position:absolute; top:48px; left:180px; right:180px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:'JetBrains Mono',monospace; font-size:24px;
+    letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-faint);
+  }
+  .chrome-top .logo{display:flex; align-items:center; gap:12px; color:var(--ink);}
+  .chrome-top .logo .mk{display:grid; grid-template-columns:1fr 1fr; gap:3px; width:24px; height:24px;}
+  .chrome-top .logo .mk i{display:block; border-radius:3px;}
+  .chrome-top .logo .mk i:nth-child(1){background:var(--green);}
+  .chrome-top .logo .mk i:nth-child(2){background:var(--yellow);}
+  .chrome-top .logo .mk i:nth-child(3){background:var(--navy);}
+  .chrome-top .logo .mk i:nth-child(4){background:var(--red);}
+  .page-num{
+    position:absolute; bottom:52px; left:50%; transform:translateX(-50%);
+    font-family:'JetBrains Mono',monospace; font-size:24px;
+    color:var(--ink-faint);
+  }
+
+  /* === Core headline === */
+  .lead{
+    font-family:'DM Serif Display',serif;
+    font-size:72px; line-height:1.15; letter-spacing:-0.02em;
+    margin:0; color:var(--ink); max-width:1400px;
+    opacity: 0; transform: translateY(15px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+  }
+  deck-stage > section[data-deck-active] .lead { opacity: 1; transform: translateY(0); }
+  .lead b{font-weight:400; color:var(--green);}
+  .lead em{font-style:italic; color:var(--ink-muted);}
+
+  /* === SLIDE 1 — Cover === */
+  .s-cover{padding:140px 180px;}
+  .s-cover .top{display:flex; justify-content:space-between; align-items:flex-start;}
+  .s-cover .corp{display:flex; align-items:center; gap:18px; color:var(--ink); font-family:'JetBrains Mono',monospace; font-size:22px; letter-spacing:0.06em;}
+  .s-cover .corp .mk{display:grid; grid-template-columns:1fr 1fr; gap:5px; width:40px; height:40px;}
+  .s-cover .corp .mk i{display:block; border-radius:5px;}
+  .s-cover .corp .mk i:nth-child(1){background:var(--green);}
+  .s-cover .corp .mk i:nth-child(2){background:var(--yellow);}
+  .s-cover .corp .mk i:nth-child(3){background:var(--navy);}
+  .s-cover .corp .mk i:nth-child(4){background:var(--red);}
+  .s-cover .mid{margin-top:auto; margin-bottom:auto;}
+  .s-cover h1{
+    font-family:'DM Serif Display',serif;
+    font-size:300px; line-height:0.88; letter-spacing:-0.035em;
+    margin:0 0 36px 0; color:var(--ink);
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+  }
+  deck-stage > section[data-deck-active] .s-cover h1 { opacity: 1; transform: translateY(0); }
+  .s-cover .tag{
+    font-family:'DM Serif Display',serif; font-style:italic;
+    font-size:68px; line-height:1.1; color:var(--ink-muted);
+    opacity: 0; transform: translateY(15px);
+    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.25s, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.25s;
+  }
+  deck-stage > section[data-deck-active] .s-cover .tag { opacity: 1; transform: translateY(0); }
+  .s-cover .bot{
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:'JetBrains Mono',monospace; font-size:18px; letter-spacing:0.12em; color:var(--ink-faint); text-transform:uppercase;
+  }
+
+  /* === Two-column layout: left text, right visual === */
+  .split{
+    margin-top:auto; margin-bottom:auto;
+    display:grid; grid-template-columns: 1fr 1fr; gap:120px;
+    align-items:center; flex:1;
+  }
+  .split.reverse{grid-template-columns: 1fr 1.2fr;}
+  .split .left .lead{font-size:62px; line-height:1.2;}
+  .split .left .sub{
+    font-family:'JetBrains Mono',monospace; font-size:26px;
+    letter-spacing:0.14em; text-transform:uppercase; color:var(--green);
+    margin-top:40px; display:flex; align-items:center; gap:16px;
+    opacity: 0; transform: translateX(-15px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.25s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.25s;
+  }
+  deck-stage > section[data-deck-active] .split .left .sub { opacity: 1; transform: translateX(0); }
+  .split .left .sub .arr{font-size:28px;}
+
+  /* === SLIDE 2: The Problem — dev cycle diagram === */
+  @keyframes flow-path { from { stroke-dashoffset: 20; } to { stroke-dashoffset: 0; } }
+  .cycles{display:grid; grid-template-columns: 1fr 1fr; gap:64px;}
+  .cycle{display:flex; flex-direction:column; align-items:center; gap:28px;
+    opacity: 0; transform: scale(0.9);
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--del, 0s), opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--del, 0s);
+  }
+  deck-stage > section[data-deck-active] .cycle { opacity: 1; transform: scale(1); }
+  .cycle path { stroke-dasharray: 4 6; animation: flow-path 1.5s linear infinite; }
+  .cycle svg circle { transition: transform 0.4s ease, fill 0.4s ease; transform-origin: center; }
+  .cycle svg circle:hover { transform: scale(1.05); }
+  .cycle .lbl{
+    font-family:'JetBrains Mono',monospace; font-size:22px;
+    letter-spacing:0.14em; text-transform:uppercase; color:var(--green); font-weight:500;
+  }
+  .cycle.ai .lbl{color:var(--red);}
+  .cycle svg{width:480px; height:480px;}
+
+  /* === SLIDE 3: 4 things === */
+  .four-wrap {
+    opacity: 0; transform: scale(0.9);
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s, opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+  }
+  deck-stage > section[data-deck-active] .four-wrap { opacity: 1; transform: scale(1); }
+  .four{
+    position:relative; width:640px; height:640px; margin:auto;
+  }
+  .four{
+    position:relative; width:640px; height:680px; margin:0 auto; transform: scale(0.92); transform-origin: center top;
+  }
+  @keyframes float-blob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  .four .blob{
+    position:absolute; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'DM Serif Display',serif; font-size:36px;
+    background:var(--cream-2); color:var(--ink); border:1px solid var(--rule);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    animation: float-blob 4s ease-in-out infinite;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+  .four .blob:hover { box-shadow: 0 15px 40px rgba(0,0,0,0.08); }
+  .four .blob.a { animation-delay: 0s; }
+  .four .blob.b { animation-delay: 1.2s; }
+  .four .blob.c { animation-delay: 2.4s; }
+  .four .blob.d { animation-delay: 0.6s; }
+  .four .blob.a{width:200px; height:200px; top:0; left:220px;}
+  .four .blob.b{width:200px; height:200px; top:230px; left:10px;}
+  .four .blob.c{width:200px; height:200px; top:230px; right:10px;}
+  .four .blob.d{
+    width:220px; height:220px; top:460px; left:210px;
+    background:var(--green); color:var(--cream); border-color:var(--green);
+    font-size:44px;
+  }
+  .four-cap{
+    position:absolute; top:700px; left:50%; transform:translateX(-50%);
+    text-align:center; width:560px;
+  }
+  .four-cap .arr{font-family:'DM Serif Display',serif; font-size:48px; color:var(--ink-faint); line-height:1;}
+  .four-cap .k{
+    font-family:'JetBrains Mono',monospace; font-size:24px;
+    letter-spacing:0.14em; text-transform:uppercase; color:var(--green); margin-top:14px;
+  }
+  .four-cap .d{font-family:'DM Serif Display',serif; font-size:40px; color:var(--ink); margin-top:10px;}
+
+  /* === SLIDE 4: Solution — 3 boxes === */
+  .boxes{display:grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap:32px; width:820px; height:600px; margin:auto;}
+  .box{
+    background:var(--cream-2); border:1px solid var(--rule);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'DM Serif Display',serif; font-size:44px; line-height:1.1;
+    text-align:center; color:var(--ink); padding:28px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    opacity: 0; transform: translateY(20px);
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--del, 0s), opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--del, 0s), box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  }
+  deck-stage > section[data-deck-active] .box { opacity: 1; transform: translateY(0); }
+  .box:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.06);
+    border-color: var(--green);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  }
+  .box.active{
+    background:var(--green); color:var(--cream); border-color:var(--green);
+    box-shadow: 0 8px 24px rgba(30,95,62,0.25);
+  }
+  .box.active:hover {
+    box-shadow: 0 16px 32px rgba(30,95,62,0.35);
+  }
+  .box.wide{grid-column:span 2;}
+
+  .feat-col{display:flex; flex-direction:column; gap:16px; margin-top:32px;}
+  .feat{
+    background:var(--green-soft); color:var(--green);
+    font-family:'Inter',sans-serif; font-weight:500; font-size:30px;
+    padding:26px 36px; border-radius:48px; text-align:center;
+    border: 1px solid transparent;
+    opacity: 0; transform: translateX(20px);
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--del, 0s), opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--del, 0s), box-shadow 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+  }
+  deck-stage > section[data-deck-active] .feat { opacity: 1; transform: translateX(0); }
+  .feat:hover {
+    transform: translateX(10px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(30,95,62,0.15);
+    background: #fff;
+    border-color: var(--green-soft);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+  }
+
+  /* === SLIDE 7: Competition — logo grid by segment === */
+  .cust-grid{display:grid; grid-template-columns: repeat(3, 1fr); gap:40px; flex:1; margin-top:24px; margin-bottom:100px;}
+  .cust-cell{
+    flex:1; background:var(--cream); border:1px solid var(--rule);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'DM Serif Display',serif; font-size:40px; color:var(--ink);
+    min-height:120px; text-align:center; padding:24px;
+    flex-direction:column; gap:6px;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  }
+  .cust-cell:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+    border-color: var(--navy);
+  }
+  .cust-col{display:flex; flex-direction:column; gap:24px;
+    opacity: 0; transform: translateY(20px);
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--del, 0s), opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--del, 0s);
+  }
+  deck-stage > section[data-deck-active] .cust-col { opacity: 1; transform: translateY(0); }
+  .cust-hd{
+    background:var(--ink); color:var(--cream);
+    font-family:'Inter',sans-serif; font-weight:600; font-size:28px;
+    padding:20px 32px; border-radius:48px; text-align:center;
+    letter-spacing:0.02em;
+  }
+  .cust-cell.orig{
+    flex:1; background:var(--cream); border:1px solid var(--rule);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'DM Serif Display',serif; font-size:44px; color:var(--ink);
+    min-height:160px; text-align:center; padding:28px;
+    flex-direction:column; gap:8px;
+  }
+  .cust-cell small{display:block; font-family:'JetBrains Mono',monospace; font-size:18px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-faint); margin-top:6px;}
+
+  /* === SLIDE 8: Business === */
+  .pricing-3{display:grid; grid-template-columns: repeat(3, 1fr); gap:32px; margin-top:auto; margin-bottom:auto; flex:1; align-items:center;}
+  .pcard{
+    background:var(--cream-2); padding:40px 32px; min-height:300px;
+    display:flex; flex-direction:column; gap:16px;
+    border-top:4px solid var(--green);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    opacity: 0; transform: translateY(20px);
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--del, 0s), opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--del, 0s);
+  }
+  deck-stage > section[data-deck-active] .pcard { opacity: 1; transform: translateY(0); }
+  .pcard:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+  }
+  .pcard:nth-child(2){border-top-color:var(--yellow);}
+  .pcard:nth-child(3){border-top-color:var(--red);}
+  .pcard .k{font-family:'JetBrains Mono',monospace; font-size:22px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-faint);}
+  .pcard .nm{font-family:'DM Serif Display',serif; font-size:48px; line-height:1.05; color:var(--ink);}
+  .pcard .pv{font-family:'DM Serif Display',serif; font-size:88px; line-height:1; color:var(--ink); margin-top:auto;}
+  .pcard .u{font-family:'JetBrains Mono',monospace; font-size:22px; color:var(--ink-muted); letter-spacing:0.10em; margin-top:8px;}
+
+  /* === SLIDE 8: Competition rows === */
+  .comp-row {
+    opacity: 0; transform: translateX(20px);
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--del, 0s), opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--del, 0s);
+  }
+  deck-stage > section[data-deck-active] .comp-row { opacity: 1; transform: translateX(0); }
+
+  /* === SLIDE 9: USP — one-sentence === */
+  .usp-wrap{
+    flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;
+    gap:48px; padding-bottom:240px;
+  }
+  .usp-sub{
+    font-family:'DM Serif Display',serif; font-style:italic;
+    font-size:48px; line-height:1.25; color:var(--ink-muted);
+    max-width:1300px;
+  }
+  .usp-big{
+    font-family:'DM Serif Display',serif;
+    font-size:200px; line-height:0.92; letter-spacing:-0.025em; color:var(--ink);
+    opacity: 0; transform: translateY(20px) scale(0.95);
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+  }
+  deck-stage > section[data-deck-active] .usp-big { opacity: 1; transform: translateY(0) scale(1); }
+  .usp-big em{font-style:italic; color:var(--green);}
+  
+  .usp-sub {
+    font-family:'DM Serif Display',serif; font-style:italic;
+    font-size:56px; line-height:1.22; color:var(--ink-muted);
+    max-width:1500px;
+    opacity: 0; transform: translateY(15px);
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s, transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
+  }
+  deck-stage > section[data-deck-active] .usp-sub { opacity: 1; transform: translateY(0); }
+  
+  .usp-tag{
+    font-family:'JetBrains Mono',monospace; font-size:26px;
+    letter-spacing:0.14em; text-transform:uppercase; color:var(--green);
+    opacity: 0; transform: translateY(10px);
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 0s, transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0s;
+  }
+  deck-stage > section[data-deck-active] .usp-tag { opacity: 1; transform: translateY(0); }
+
+</style>
+</head>
+<body>
+
+<script type="application/json" id="speaker-notes">[]</script>
+
+<deck-stage width="1920" height="1080">
+
+  <!-- ========== 1 · COVER ========== -->
+  <section class="s-cover" data-screen-label="01 Cover">
+    <div class="top">
+      <div class="corp"><div class="mk"><i></i><i></i><i></i><i></i></div><span>OneNine</span></div>
+      <div class="corp" style="align-items:center; display:flex; gap:16px;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div style="width:30px; height:30px; background:#DE3A36; display:flex; justify-content:center; align-items:flex-end; padding-bottom:5px; border-radius:1px;">
+            <svg width="18" height="18" viewBox="0 0 14 15"><polygon points="7,0 0,15 4,15 7,8 10,15 14,15" fill="white"/></svg>
+          </div>
+          <span style="font-family:'Inter', sans-serif; font-weight:800; font-size:30px; letter-spacing:2px; color:#DE3A36; margin-top:2px;">NTLER</span>
+        </div>
+        <span style="font-size:16px; letter-spacing:0.14em; color:var(--ink-muted); margin-top:4px;">· RESIDENCY · APRIL 2026</span>
+      </div>
+    </div>
+
+    <style>
+      .cover-mid {
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        transform: translateY(-20px);
+      }
+      .huge-mk {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        width: 140px;
+        height: 140px;
+      }
+      .huge-mk i {
+        display: block;
+        border-radius: 20px;
+        opacity: 0;
+        box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+      }
+      deck-stage > section[data-deck-active] .huge-mk i:nth-child(1) { animation: popIn 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s forwards; background: var(--green); transform-origin: bottom right;}
+      deck-stage > section[data-deck-active] .huge-mk i:nth-child(2) { animation: popIn 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s forwards; background: var(--yellow); transform-origin: bottom left;}
+      deck-stage > section[data-deck-active] .huge-mk i:nth-child(3) { animation: popIn 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s forwards; background: var(--navy); transform-origin: top right;}
+      deck-stage > section[data-deck-active] .huge-mk i:nth-child(4) { animation: popIn 0.8s cubic-bezier(0.16,1,0.3,1) 0.4s forwards; background: var(--red); transform-origin: top left;}
+
+      @keyframes popIn {
+        0% { opacity: 0; transform: scale(0.3) rotate(-20deg) translateY(40px); }
+        60% { transform: scale(1.1) rotate(5deg) translateY(-5px); }
+        100% { opacity: 1; transform: scale(1) rotate(0deg) translateY(0); }
+      }
+
+      .cover-h1 {
+        font-family: 'DM Serif Display', serif;
+        font-size: 200px;
+        line-height: 0.9;
+        letter-spacing: -0.03em;
+        margin: 32px 0 16px 0;
+        color: var(--ink);
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+        transition: opacity 1s cubic-bezier(0.16,1,0.3,1) 0.6s, transform 1s cubic-bezier(0.16,1,0.3,1) 0.6s;
+      }
+      deck-stage > section[data-deck-active] .cover-h1 { opacity: 1; transform: translateY(0) scale(1); }
+
+      .cover-tag {
+        font-family: 'DM Serif Display', serif;
+        font-style: italic;
+        font-size: 40px;
+        color: var(--ink-muted);
+        text-align: center;
+        max-width: 1000px;
+        line-height: 1.3;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 1s cubic-bezier(0.16,1,0.3,1) 0.8s, transform 1s cubic-bezier(0.16,1,0.3,1) 0.8s;
+      }
+      deck-stage > section[data-deck-active] .cover-tag { opacity: 1; transform: translateY(0); }
+    </style>
+
+    <div class="cover-mid">
+      <div class="huge-mk"><i></i><i></i><i></i><i></i></div>
+      <h1 class="cover-h1">OneNine</h1>
+      <div class="cover-tag">We don't train models, we supply them.</div>
+    </div>
+
+    <div class="bot" style="display:flex; justify-content:space-between; width:100%; align-items:flex-end;">
+      <div style="font-family:'JetBrains Mono', monospace; font-size:18px; letter-spacing:0.1em; color:var(--ink-faint); text-transform:uppercase;">Business · Competition · USP</div>
+      <div></div>
+    </div>
+  </section>
+
+  <!-- ========== 2 · PROBLEM (dev-cycle style) ========== -->
+  <section data-screen-label="02 Problem">
+    <div class="chrome-top">
+      <div class="logo"><div class="mk"><i></i><i></i><i></i><i></i></div>OneNine</div>
+      <div>The Problem</div>
+    </div>
+
+    <div class="split">
+      <div class="left" style="display:flex; flex-direction:column; justify-content:center; gap: 48px; padding-right: 40px;">
+        <div class="lead" style="font-size:62px; line-height: 1.05;"><b>AI is blind to Africa.</b><br><span style="color:var(--ink-muted);">1.5B people excluded.</span></div>
+        
+        <div style="display:flex; gap:40px; opacity:0; transform:translateY(15px); transition:opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s;" class="prob-metrics">
+          <div>
+             <div style="font-family:'DM Serif Display', serif; font-size:72px; color:#DE3A36; line-height:1;">$210B</div>
+             <div style="font-family:'Inter', sans-serif; font-size:18px; font-weight:500; color:var(--ink); margin-top:8px;">Value Delayed</div>
+          </div>
+          <div>
+             <div style="font-family:'DM Serif Display', serif; font-size:72px; color:#DE3A36; line-height:1;">$100M+</div>
+             <div style="font-family:'Inter', sans-serif; font-size:18px; font-weight:500; color:var(--ink); margin-top:8px;">Trapped OpEx</div>
+          </div>
+        </div>
+        
+        <div style="font-family:'Inter', sans-serif; font-size:18px; color:var(--ink-muted); border-left: 3px solid #DE3A36; padding-left:24px; opacity:0; transform:translateX(-15px); transition:opacity 0.8s ease 0.5s, transform 0.8s ease 0.5s; line-height: 1.45;" class="prob-usecases">
+          <b style="color:var(--ink); display:block; margin-bottom:16px; font-size:14px; text-transform:uppercase; letter-spacing:0.08em;">Commercial Failure</b>
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <div><b style="color:var(--ink); font-size:20px;">Safaricom (30M+ Customers)</b><br>Global voice agents fail in Swahili, forcing heavy manual call-center OpEx.</div>
+            <div><b style="color:var(--ink); font-size:20px;">Meta (300M+ Users)</b><br>Safety & ad models heavily degraded due to blindness in Yoruba and Igbo.</div>
+            <div><b style="color:var(--ink); font-size:20px;">1.5B Everyday Users</b><br>Local farmers, doctors and businesses locked out of AI due to zero Wolof or Luganda support.</div>
+          </div>
+        </div>
+
+        <style>
+          deck-stage > section[data-deck-active] .prob-metrics { opacity:1 !important; transform:translateY(0) !important; }
+          deck-stage > section[data-deck-active] .prob-usecases { opacity:1 !important; transform:translateX(0) !important; }
+        </style>
+      </div>
+      <div class="right">
+        <div class="cycles">
+          <div class="cycle" style="--del: 0.15s;">
+            <div class="lbl">Global AI cycle</div>
+            <svg viewBox="0 0 320 320">
+              <circle cx="90" cy="110" r="56" fill="var(--green-soft)" stroke="var(--rule)"/>
+              <circle cx="230" cy="110" r="56" fill="#E9E4D5" stroke="var(--rule)"/>
+              <circle cx="160" cy="230" r="56" fill="#E9E4D5" stroke="var(--rule)"/>
+              <text x="90" y="116" text-anchor="middle" font-family="Inter" font-size="17" fill="#1A1A1A">Web data</text>
+              <text x="230" y="116" text-anchor="middle" font-family="Inter" font-size="17" fill="#1A1A1A">Train</text>
+              <text x="160" y="236" text-anchor="middle" font-family="Inter" font-size="17" fill="#1A1A1A">Deploy</text>
+              <path d="M146 110 L174 110" stroke="#1A1A1A" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+              <path d="M210 160 L185 205" stroke="#1A1A1A" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+              <path d="M135 205 L110 160" stroke="#1A1A1A" stroke-width="1.5" fill="none" marker-end="url(#a1)"/>
+              <defs><marker id="a1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#1A1A1A"/></marker></defs>
+            </svg>
+          </div>
+          <div class="cycle ai" style="--del: 0.35s;">
+            <div class="lbl">African AI cycle</div>
+            <svg viewBox="0 0 320 320">
+              <circle cx="90" cy="110" r="56" fill="var(--red-soft)" stroke="var(--rule)"/>
+              <circle cx="230" cy="110" r="56" fill="#E9E4D5" stroke="var(--rule)"/>
+              <circle cx="160" cy="230" r="56" fill="#E9E4D5" stroke="var(--rule)"/>
+              <text x="90" y="116" text-anchor="middle" font-family="Inter" font-size="16" fill="#1A1A1A">No data</text>
+              <text x="230" y="110" text-anchor="middle" font-family="Inter" font-size="16" fill="#1A1A1A">No model</text>
+              <text x="230" y="126" text-anchor="middle" font-family="Inter" font-size="16" fill="#1A1A1A"></text>
+              <text x="160" y="230" text-anchor="middle" font-family="Inter" font-size="16" fill="#1A1A1A">No product</text>
+              
+              <!-- Red broken lines -->
+              <path d="M146 110 L174 110" stroke="#DE3A36" stroke-width="2" stroke-dasharray="4 4" fill="none" marker-end="url(#a3)"/>
+              <path d="M210 160 L185 205" stroke="#DE3A36" stroke-width="2" stroke-dasharray="4 4" fill="none" marker-end="url(#a3)"/>
+              <path d="M135 205 L110 160" stroke="#DE3A36" stroke-width="2" stroke-dasharray="4 4" fill="none" marker-end="url(#a3)"/>
+              <defs><marker id="a3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#DE3A36"/></marker></defs>
+              
+              <!-- Red Crosses to show it's completely broken and not flowing -->
+              <g stroke="#DE3A36" stroke-width="3" stroke-linecap="round">
+                <!-- Top line cross -->
+                <path d="M154 104 L166 116 M154 116 L166 104" />
+                <!-- Right line cross -->
+                <path d="M191 176 L203 188 M191 188 L203 176" />
+                <!-- Left line cross -->
+                <path d="M117 176 L129 188 M117 188 L129 176" />
+              </g>
+
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-num">02</div>
+  </section>
+
+  <!-- ========== 3 · TO BUILD AI (4 things) ========== -->
+  <section data-screen-label="03 Ingredients">
+    <div class="chrome-top">
+      <div class="logo"><div class="mk"><i></i><i></i><i></i><i></i></div>OneNine</div>
+      <div>The Bottleneck</div>
+    </div>
+
+    <div class="split">
+      <div class="left">
+        <div class="lead">To build AI for Africa,<br>you need<br><b>4 core ingredients.</b></div>
+      </div>
+      <div class="right" style="display:flex; align-items:center; justify-content:center;">
+        <div class="four-wrap">
+          <div class="four">
+            <div class="blob a">Models</div>
+            <div class="blob b">Compute</div>
+            <div class="blob c">Talent</div>
+            <div class="blob d">Data</div>
+            <div class="four-cap">
+              <div class="arr">↓</div>
+              <div class="k">Our focus</div>
+              <div class="d">Bottleneck for <b style="color:var(--green); font-weight:400;">every</b> African AI product.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-num">03</div>
+  </section>
+
+  <!-- ========== 4 · SOLUTION PIPELINE ========== -->
+  <section data-screen-label="04 Pipeline">
+    <div class="chrome-top">
+      <div class="logo"><div class="mk"><i></i><i></i><i></i><i></i></div>OneNine</div>
+      <div>Our Solution</div>
+    </div>
+
+    <!-- Header -->
+    <div style="margin-top: 40px; text-align:center;">
+      <div class="lead" style="font-size:42px; color:var(--ink-muted); margin-bottom:20px;">We've solved the data problem.</div>
+      <div class="lead" style="font-size:80px; max-width:1300px; margin:0 auto; line-height:1.1; letter-spacing:-0.01em;">OneNine is the <b>end-to-end factory</b>.</div>
+    </div>
+
+    <!-- Pipeline UI -->
+    <style>
+      .pipeline-wrap {
+        display: flex; justify-content: space-between; align-items: flex-start;
+        position: relative; width: 100%; margin: 100px auto 0 auto; max-width: 1500px; z-index: 2;
+      }
+      .pipeline-wrap::before {
+        content: ""; position: absolute; top: 44px; left: 5%; right: 5%; height: 2px;
+        background: var(--rule); z-index: 0;
+      }
+      .pipe-node {
+        position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center;
+        width: 200px; text-align: center;
+        opacity: 0; transform: translateY(20px);
+        transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--del, 0s), opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--del, 0s);
+      }
+      deck-stage > section[data-deck-active] .pipe-node { opacity: 1; transform: translateY(0); }
+      
+      .pipe-box {
+        width: 88px; height: 88px; border-radius: 20px;
+        background: var(--cream); border: 2px solid var(--rule);
+        display: flex; align-items: center; justify-content: center;
+        color: var(--ink-muted); margin-bottom: 24px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+      }
+      .pipe-node:hover .pipe-box {
+        transform: translateY(-8px);
+        border-color: var(--green); color: var(--green);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+      }
+      .pipe-box.active {
+        background: var(--green); border-color: var(--green); color: var(--cream);
+        box-shadow: 0 8px 24px rgba(30,95,62,0.25);
+      }
+      .pipe-node:hover .pipe-box.active { color: var(--cream); }
+      
+      .pipe-num { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--ink-faint); margin-bottom: 8px; letter-spacing: 0.1em; }
+      .pipe-title { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--ink); line-height: 1.1; margin-bottom: 8px; }
+      .pipe-desc { font-family: 'Inter', sans-serif; font-size: 16px; color: var(--ink-muted); line-height: 1.4; padding: 0 10px; }
+
+      .africa-bg {
+        position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+        width: 900px; height: 900px; object-fit: contain;
+        opacity: 0.07; mix-blend-mode: multiply; pointer-events: none; z-index: 0;
+      }
+    </style>
+
+    <!-- Faint Africa Map Background -->
+    <img src="https://upload.wikimedia.org/wikipedia/commons/0/07/Africa_Solid.svg" class="africa-bg" alt="Africa Map Background">
+
+    <div class="pipeline-wrap">
+      <div class="pipe-node" style="--del:0.1s;">
+         <div class="pipe-box">
+           <!-- Users Group Icon -->
+           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"/></svg>
+         </div>
+         <div class="pipe-num">01</div>
+         <div class="pipe-title">Source</div>
+         <div class="pipe-desc">Web scraping, open repos, & native contributors</div>
+      </div>
+      <div class="pipe-node" style="--del:0.25s;">
+         <div class="pipe-box">
+           <!-- Database Icon -->
+           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6a8 3 0 0 0 16 0V6"/><path d="M4 12v6a8 3 0 0 0 16 0v-6"/></svg>
+         </div>
+         <div class="pipe-num">02</div>
+         <div class="pipe-title">Collect</div>
+         <div class="pipe-desc">Audio, text, image & video data generation</div>
+      </div>
+      <div class="pipe-node" style="--del:0.4s;">
+         <div class="pipe-box active">
+           <!-- Animated Engine Gears -->
+           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+             <g>
+               <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+               <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="5s" repeatCount="indefinite"/>
+             </g>
+           </svg>
+         </div>
+         <div class="pipe-num">03</div>
+         <div class="pipe-title" style="color:var(--green);">Automate</div>
+         <div class="pipe-desc">ASR, TTS, Translation & Vision</div>
+         <div style="font-size:12px; font-weight:700; color:var(--green); letter-spacing:0.04em; margin-top:12px; padding:4px 10px; border:1px solid rgba(30,95,62,0.3); border-radius:4px; display:inline-block; background:rgba(30,95,62,0.05); white-space:nowrap;">~70% AUTOMATED</div>
+      </div>
+      <div class="pipe-node" style="--del:0.55s;">
+         <div class="pipe-box">
+           <!-- Shield Check Icon -->
+           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+         </div>
+         <div class="pipe-num">04</div>
+         <div class="pipe-title">Validate</div>
+         <div class="pipe-desc">Expert linguist QA & rigorous human verification</div>
+      </div>
+      <div class="pipe-node" style="--del:0.7s;">
+         <div class="pipe-box">
+           <!-- Layers Icon -->
+           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+         </div>
+         <div class="pipe-num">05</div>
+         <div class="pipe-title">Format</div>
+         <div class="pipe-desc">Structuring into training-ready export corpora</div>
+      </div>
+      <div class="pipe-node" style="--del:0.85s;">
+         <div class="pipe-box">
+           <!-- Api / Server Icon -->
+           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+         </div>
+         <div class="pipe-num">06</div>
+         <div class="pipe-title">Deliver</div>
+         <div class="pipe-desc">API endpoints, Data Packs & enterprise partners</div>
+      </div>
+    </div>
+
+    <div class="page-num" style="bottom: 50px;">04</div>
+  </section>
+
+  <!-- ========== 5 · CUSTOMERS / COMPETITION LANDSCAPE ========== -->
+  <section data-screen-label="05 Who We Serve">
+    <div class="chrome-top">
+      <div class="logo"><div class="mk"><i></i><i></i><i></i><i></i></div>OneNine</div>
+      <div>Who We Serve</div>
+    </div>
+
+    <div style="margin-top:20px; margin-bottom:24px;">
+      <div class="lead" style="font-size:42px;">Target segments & our <b>Current PoCs</b>.</div>
+    </div>
+
+    <style>
+      .cust-grid { grid-template-columns: repeat(5, 1fr) !important; gap: 24px !important; margin-bottom: 40px !important; }
+      .cust-hd { font-size: 20px !important; padding: 16px !important; letter-spacing: 0.05em !important; }
+      .cust-cell { font-size: 26px !important; padding: 14px !important; gap: 4px !important; min-height: 90px !important; }
+      .cust-cell small { font-size: 11px !important; letter-spacing: 0.05em !important; margin-top: 4px !important; }
+    </style>
+
+    <div class="cust-grid" style="margin-top: 10px;">
+      <div class="cust-col" style="--del: 0.1s;">
+        <div class="cust-hd">Frontier Labs</div>
+        <div class="cust-cell">OpenAI<small>Voice · RLHF</small></div>
+        <div class="cust-cell">DeepMind<small>Low-resource</small></div>
+        <div class="cust-cell">Anthropic<small>RLHF · Eval</small></div>
+        <div class="cust-cell">Meta<small>SeamlessM4T</small></div>
+      </div>
+
+      <div class="cust-col" style="--del: 0.2s;">
+        <div class="cust-hd">Mid-Tier Labs</div>
+        <div class="cust-cell">ElevenLabs<small>Voice Gen</small></div>
+        <div class="cust-cell">Cohere<small>Multilingual LLMs</small></div>
+        <div class="cust-cell">AssemblyAI<small>Speech API</small></div>
+        <div class="cust-cell">Reka AI<small>Multimodal</small></div>
+      </div>
+
+      <div class="cust-col" style="--del: 0.3s;">
+        <div class="cust-hd">AI in Africa</div>
+        <div class="cust-cell">InstaDeep<small>Advanced R&D</small></div>
+        <div class="cust-cell">Lelapa AI<small>Language Models</small></div>
+        <div class="cust-cell">Intron Health<small>Clinical Speech</small></div>
+        <div class="cust-cell">Pelonomi<small>Language AI</small></div>
+      </div>
+
+      <div class="cust-col" style="--del: 0.4s;">
+        <div class="cust-hd">Telcos</div>
+        <div class="cust-cell">Safaricom<small>Swahili Voice</small></div>
+        <div class="cust-cell">MTN<small>20 Markets</small></div>
+        <div class="cust-cell">Orange<small>Francophone</small></div>
+        <div class="cust-cell">Airtel<small>Pan-African</small></div>
+      </div>
+      
+      <div class="cust-col" style="--del: 0.5s;">
+        <div class="cust-hd" style="background:var(--green);">Current PoCs</div>
+        <div class="cust-cell" style="border-width:2px; border-color:var(--green-soft);">Lafricamobile<small>2700h ASR/TTS</small></div>
+        <div class="cust-cell" style="border-width:2px; border-color:var(--green-soft);">ToumAI<small>TTS 4 Maroc/Tunis/Algeria</small></div>
+        <div class="cust-cell" style="border-width:2px; border-color:var(--green-soft);">Stealth US AI<small>Wolof/Fr/En switch</small></div>
+        <div class="cust-cell" style="border-width:2px; border-color:var(--green-soft);">GeoPoll<small>>500k hrs potential</small></div>
+      </div>
+    </div>
+
+    <div class="page-num">05</div>
+  </section>
+
+  <!-- ========== 7 · BUSINESS MODEL ========== -->
+  <section data-screen-label="06 Business Model">
+    <div class="chrome-top">
+      <div class="logo"><div class="mk"><i></i><i></i><i></i><i></i></div>OneNine</div>
+      <div>Business Model</div>
+    </div>
+
+    <div style="margin-top:20px;">
+      <div class="lead" style="font-size:42px;">We charge <b>per unit of data</b> delivered.</div>
+    </div>
+
+    <style>
+      .pricing-4 { display:grid; grid-template-columns: repeat(4, 1fr); gap:28px; margin-top:auto; margin-bottom:auto; flex:1; align-items:center; }
+      .pcard-4 { 
+        background:var(--cream-2); padding:40px 24px; min-height:440px;
+        display:flex; flex-direction:column; gap:16px;
+        border-top:4px solid var(--green);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        opacity: 0; transform: translateY(20px);
+        transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--del, 0s), opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--del, 0s);
+      }
+      deck-stage > section[data-deck-active] .pcard-4 { opacity: 1; transform: translateY(0); }
+      .pcard-4:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+      }
+      .pcard-4:nth-child(2){border-top-color:var(--yellow);}
+      .pcard-4:nth-child(3){border-top-color:var(--red);}
+      .pcard-4:nth-child(4){border-top-color:var(--navy);}
+      
+      .pcard-4 .k{font-family:'JetBrains Mono',monospace; font-size:20px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-faint);}
+      .pcard-4 .nm{font-family:'DM Serif Display',serif; font-size:40px; line-height:1.1; color:var(--ink);}
+      .pcard-4 .pv{font-family:'DM Serif Display',serif; font-size:62px; line-height:1; color:var(--ink); margin-top:auto;}
+      .pcard-4 .u{font-family:'JetBrains Mono',monospace; font-size:18px; color:var(--ink-muted); letter-spacing:0.10em; margin-top:4px;}
+
+      .pcard-4 .econ {
+        margin-top:16px; padding-top:16px; border-top:1px dashed var(--rule);
+        display:flex; flex-direction:column; gap:6px;
+        font-family:'JetBrains Mono',monospace; font-size:15px; letter-spacing:0.05em; text-transform:uppercase;
+      }
+      .pcard-4 .econ-row { display:flex; justify-content:space-between; align-items:center; }
+      .pcard-4 .econ .el { color:var(--ink-muted); }
+      .pcard-4 .econ .ev { color:var(--ink); font-weight:500; font-size:16px; }
+      .pcard-4 .econ .em { display:flex; justify-content:space-between; align-items:center; margin-top:8px; padding-top:8px; border-top:1px solid var(--rule); color:var(--ink); font-weight:600; font-size:18px;}
+      .pcard-4 .econ .em .vl { color:var(--green); }
+
+      .licensing-banner {
+        margin-top: 24px;
+        background: var(--cream-2);
+        border: 1px solid var(--rule);
+        border-left: 4px solid var(--green);
+        padding: 24px 32px;
+        display: flex; justify-content: space-between; align-items: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        opacity: 0; transform: translateY(20px);
+        transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--del, 0s), opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--del, 0s);
+      }
+      deck-stage > section[data-deck-active] .licensing-banner { opacity: 1; transform: translateY(0); }
+      .licensing-banner:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 14px 28px rgba(0,0,0,0.06);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .licensing-banner .k { font-family:'JetBrains Mono',monospace; font-size:18px; letter-spacing:0.14em; text-transform:uppercase; color:var(--green); margin-bottom:4px; font-weight:600;}
+      .licensing-banner .nm { font-family:'DM Serif Display',serif; font-size:32px; line-height:1.1; color:var(--ink); }
+      .licensing-banner .desc { font-size:18px; color:var(--ink-muted); margin-top:6px; max-width:600px; line-height:1.4; }
+      .licensing-banner .pv-wrap { display:flex; align-items:baseline; gap:10px; justify-content:flex-end; }
+      .licensing-banner .pv { font-family:'DM Serif Display',serif; font-size:46px; color:var(--ink); line-height:1; }
+      .licensing-banner .u { font-family:'JetBrains Mono',monospace; font-size:16px; color:var(--ink-muted); letter-spacing:0.10em; text-transform:uppercase; }
+    </style>
+
+    <div class="pricing-4">
+      <div class="pcard-4" style="--del: 0.1s;">
+        <div class="k">ASR / Speech</div>
+        <div class="nm">Transcription</div>
+        <div class="pv">$150–300</div>
+        <div class="u">per hour</div>
+        <div class="econ">
+          <div class="econ-row"><div class="el">Avg Price</div><div class="ev">$200</div></div>
+          <div class="econ-row"><div class="el">Labor/Tech</div><div class="ev" style="color:var(--red);">$50</div></div>
+          <div class="em"><div class="el" style="color:var(--ink);">Gross Margin</div><div class="vl">75%</div></div>
+        </div>
+      </div>
+      <div class="pcard-4" style="--del: 0.25s;">
+        <div class="k">TTS / Voice</div>
+        <div class="nm">Studio Synthesis</div>
+        <div class="pv">$400–800</div>
+        <div class="u">per hour</div>
+        <div class="econ">
+          <div class="econ-row"><div class="el">Avg Price</div><div class="ev">$600</div></div>
+          <div class="econ-row"><div class="el">Actor/Tech</div><div class="ev" style="color:var(--red);">$150</div></div>
+          <div class="em"><div class="el" style="color:var(--ink);">Gross Margin</div><div class="vl">75%</div></div>
+        </div>
+      </div>
+      <div class="pcard-4" style="--del: 0.4s;">
+        <div class="k">RLHF</div>
+        <div class="nm">Preference Pairs</div>
+        <div class="pv">$2–8</div>
+        <div class="u">per pair</div>
+        <div class="econ">
+          <div class="econ-row"><div class="el">Avg Price</div><div class="ev">$4.00</div></div>
+          <div class="econ-row"><div class="el">SME Cost</div><div class="ev" style="color:var(--red);">$1.20</div></div>
+          <div class="em"><div class="el" style="color:var(--ink);">Gross Margin</div><div class="vl">70%</div></div>
+        </div>
+      </div>
+      <div class="pcard-4" style="--del: 0.55s;">
+        <div class="k">Text / Labels</div>
+        <div class="nm">Translation & Eval</div>
+        <div class="pv">Volume</div>
+        <div class="u">$ / word or turn</div>
+        <div class="econ">
+          <div class="econ-row"><div class="el">Avg Word</div><div class="ev">$0.15</div></div>
+          <div class="econ-row"><div class="el">Worker Cost</div><div class="ev" style="color:var(--red);">$0.03</div></div>
+          <div class="em"><div class="el" style="color:var(--ink);">Gross Margin</div><div class="vl">80%</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="licensing-banner" style="--del: 0.7s;">
+      <div class="l-left">
+        <div class="k">Data on the Shelves</div>
+        <div class="nm">Licensing, APIs & Data Packs</div>
+        <div class="desc">Redistribution rights for pre-built ASR, TTS, and text datasets. Zero collection time, ready for immediate deployment.</div>
+      </div>
+      <div class="l-right" style="text-align:right;">
+        <div class="pv-wrap"><span class="u">Fractional scale:</span><span class="pv">~30%</span><span class="u">of custom</span></div>
+        <div class="econ" style="margin-top:12px; font-family:'JetBrains Mono', monospace; font-size:15px;">
+          <div style="color:var(--green); font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">Gross Margin: 95%+ (Write once, sell infinite)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-num">06</div>
+  </section>
+
+  <!-- ========== 8 · COMPETITION ========== -->
+  <section data-screen-label="07 Competition">
+    <div class="chrome-top">
+      <div class="logo"><div class="mk"><i></i><i></i><i></i><i></i></div>OneNine</div>
+      <div>Competition</div>
+    </div>
+
+    <!-- Header Section -->
+    <div style="text-align:center; margin-top:20px;">
+      <div class="lead" style="font-size:36px; color:var(--ink-muted); margin-bottom:0px;">Incumbents serve English. Local shops can't scale.</div>
+      <div class="lead" style="font-size:62px; max-width:1300px; margin:0 auto; line-height:1.1;"><em>OneNine dominates the intersection.</em></div>
+    </div>
+
+    <style>
+      .f-table { width: 100%; max-width: 1400px; margin: 30px auto 0 auto; border-collapse: separate; border-spacing: 0 4px; }
+      .f-table th { 
+        font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-faint); 
+        padding: 10px 16px; border-bottom: 2px solid var(--ink-faint); text-align: center; vertical-align: bottom;
+      }
+      .f-table th:nth-child(1), .f-table th:nth-child(2) { text-align: left; }
+
+      .f-table td { padding: 12px 16px; border-bottom: 1px solid var(--rule); text-align: center; vertical-align: middle; background: var(--cream-2); }
+      .f-table td:nth-child(1), .f-table td:nth-child(2) { text-align: left; }
+      
+      .f-table td:first-child { border-radius: 8px 0 0 8px; border-left: 1px solid var(--rule); }
+      .f-table td:last-child { border-radius: 0 8px 8px 0; border-right: 1px solid var(--rule); }
+      .f-table tr { opacity: 0; transform: translateY(10px); transition: transform 0.6s cubic-bezier(0.16,1,0.3,1) var(--del, 0s), opacity 0.6s ease var(--del, 0s), box-shadow 0.3s ease; }
+      deck-stage > section[data-deck-active] .f-table tr { opacity: 1; transform: translateY(0); }
+      
+      .f-table tr:not(.r-onenine):hover td { background: #fff; cursor: default; }
+
+      .f-comp { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--ink); line-height:1.1; }
+      .f-foc { font-family: 'Inter', sans-serif; font-size: 15px; color: var(--ink-muted); max-width: 260px; line-height: 1.3; }
+
+      .r-onenine { position:relative; z-index:5; box-shadow: 0 16px 40px rgba(30,95,62,0.25); }
+      .r-onenine td { background: var(--green) !important; color: var(--cream); border-bottom: none; border:none; padding:20px 16px;}
+      .r-onenine td:first-child { border-radius: 12px 0 0 12px; }
+      .r-onenine td:last-child { border-radius: 0 12px 12px 0; }
+      .r-onenine .f-comp { color: var(--cream); font-size: 40px; }
+      .r-onenine .f-foc { color: var(--cream); opacity: 0.9; font-size:18px; font-weight:500;}
+
+      .ic-check { color: var(--green); }
+      .r-onenine .ic-check { color: var(--cream); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+      .ic-cross { color: #d0cabc; }
+    </style>
+
+    <table class="f-table">
+      <tr>
+        <th style="width:16%;">Competitor</th>
+        <th style="width:24%;">Their Focus</th>
+        <th style="width:15%;">African Nuance<br>& Context</th>
+        <th style="width:15%;">Automation<br>Engines</th>
+        <th style="width:15%;">Multimodal<br>Audio / RLHF</th>
+        <th style="width:15%;">Enterprise API<br>Scale & Workflows</th>
+      </tr>
+      
+      <tr style="--del:0.1s">
+        <td class="f-comp">Scale AI</td>
+        <td class="f-foc">High-resource English RLHF</td>
+        <td><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ic-cross"><path d="M18 6L6 18M6 6l12 12"/></svg></td>
+        <td><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="ic-check"><polyline points="20 6 9 17 4 12"/></svg></td>
+        <td><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="ic-check"><polyline points="20 6 9 17 4 12"/></svg></td>
+        <td><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="ic-check"><polyline points="20 6 9 17 4 12"/></svg></td>
+      </tr>
+      <tr style="--del:0.15s">
+        <td class="f-comp">Surge AI</td>
+        <td class="f-foc">Deep logic, STEM & Code Reasoning</td>
+        <td><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ic-cross"><path d="M18 6L6 18M6 6l12 12"/></svg></td>
+        <td><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="ic-check"><polyline points="20 6 9 17 4 12"/></svg></td>
+        <td><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="ic-check"><polyline points="20 6 9 17 4 12"/></svg></td>
+        <td><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="ic-check"><polyline points="20 6 9 17 4 12"/></svg></td>
+      </tr>
+      <tr style="--del:0.2s">
+        <td class="f-comp">Turing</td>
+        <td class="f-foc">Developer networks & coding sourcing</td>
+        <td><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ic-cross"><path d="M18 6L6 18M6 6l12 12"/></svg></td>
+        <td><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="ic-check"><polyline points="20 6 9 17 4 12"/></svg></td>
+        <td><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ic-cross"><path d="M18 6L6 18M6 6l12 12"/></svg></td>
+        <td><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="ic-check"><polyline points="20 6 9 17 4 12"/></svg></td>
+      </tr>
+      <tr style="--del:0.25s">
+        <td class="f-comp">Appen</td>
+        <td class="f-foc">Global marketplace micro-tasks</td>
+        <td><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ic-cross"><path d="M18 6L6 18M6 6l12 12"/></svg></td>
+        <td><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ic-cross"><path d="M18 6L6 18M6 6l12 12"/></svg></td>
+        <td><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="ic-check"><polyline points="20 6 9 17 4 12"/></svg></td>
+        <td><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="ic-check"><polyline points="20 6 9 17 4 12"/></svg></td>
+      </tr>
+      <tr style="--del:0.3s">
+        <td class="f-comp">Toloka</td>
+        <td class="f-foc">Massive unsourced crowd workers</td>
+        <td><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ic-cross"><path d="M18 6L6 18M6 6l12 12"/></svg></td>
+        <td><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ic-cross"><path d="M18 6L6 18M6 6l12 12"/></svg></td>
+        <td><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="ic-check"><polyline points="20 6 9 17 4 12"/></svg></td>
+        <td><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="ic-check"><polyline points="20 6 9 17 4 12"/></svg></td>
+      </tr>
+      <tr style="--del:0.35s">
+        <td class="f-comp" style="font-size:22px; line-height: 1.1;">Traditional BPOs<br>& LSPs</td>
+        <td class="f-foc">Physical offices & call center workflows</td>
+        <td><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="ic-check"><polyline points="20 6 9 17 4 12"/></svg></td>
+        <td><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ic-cross"><path d="M18 6L6 18M6 6l12 12"/></svg></td>
+        <td><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ic-cross"><path d="M18 6L6 18M6 6l12 12"/></svg></td>
+        <td><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ic-cross"><path d="M18 6L6 18M6 6l12 12"/></svg></td>
+      </tr>
+      
+      <tr class="r-onenine" style="--del:0.45s">
+        <td class="f-comp">OneNine</td>
+        <td class="f-foc">The End-to-End African Data Pipeline</td>
+        <td><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="ic-check"><polyline points="20 6 9 17 4 12"/></svg></td>
+        <td><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="ic-check"><polyline points="20 6 9 17 4 12"/></svg></td>
+        <td><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="ic-check"><polyline points="20 6 9 17 4 12"/></svg></td>
+        <td><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="ic-check"><polyline points="20 6 9 17 4 12"/></svg></td>
+      </tr>
+    </table>
+
+    <style>deck-stage > section[data-deck-active] .mobile-note { opacity:1 !important; transform:translateY(0) !important; }</style>
+    <div style="max-width:1400px; margin: 20px auto 0 auto; display:flex; justify-content:center; opacity:0; transform:translateY(10px); transition:opacity 0.6s ease 0.6s, transform 0.6s ease 0.6s;" class="mobile-note">
+       <div style="background:rgba(30,95,62,0.06); border:1px solid rgba(30,95,62,0.2); color:var(--ink); padding:14px 24px; border-radius:8px; font-family:'Inter',sans-serif; font-size:15px; display:inline-flex; align-items:center; gap:12px; box-shadow:0 4px 12px rgba(0,0,0,0.02)">
+         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+         <span><b style="color:var(--green-dark);">100% Decentralized Mobile Earning:</b> Unlike traditional BPOs and call centers, OneNine empowers native experts to work and earn entirely from their smartphones, from anywhere.</span>
+       </div>
+    </div>
+
+    <div class="page-num">07</div>
+  </section>
+
+  <!-- ========== 9 · USP (Final Pillar Slide) ========== -->
+  <section data-screen-label="08 USP">
+    <div class="chrome-top">
+      <div class="logo"><div class="mk"><i></i><i></i><i></i><i></i></div>OneNine</div>
+      <div>Why OneNine Wins</div>
+    </div>
+
+    <style>
+      .usp-layout { display: flex; align-items: center; justify-content: space-between; height: 100%; padding: 0 60px; max-width: 1600px; margin: 40px auto 0 auto; gap: 80px;}
+      .usp-left { flex: 1.2; display: flex; flex-direction: column; justify-content: center; }
+      .usp-right { flex: 0.8; display: flex; flex-direction: column; gap: 24px; position: relative; }
+      
+      /* Vertical rule separating left and right */
+      .usp-right::before { content:''; position:absolute; left:-40px; top:10%; bottom:10%; width:1px; background:var(--rule); }
+
+      .usp-big { font-family: 'DM Serif Display', serif; font-size: 100px; line-height: 1.05; letter-spacing: -0.01em; color: var(--ink); margin-bottom: 30px; opacity:0; transform:translateY(20px); transition: opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s;}
+      .usp-big em { font-style: italic; color: var(--green); }
+      deck-stage > section[data-deck-active] .usp-big { opacity:1; transform:translateY(0); }
+
+      .usp-sub { font-size: 32px; color: var(--ink-muted); line-height: 1.4; font-family: 'DM Serif Display', serif; font-style: italic; opacity:0; transform:translateY(15px); transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s; max-width: 800px;}
+      deck-stage > section[data-deck-active] .usp-sub { opacity:1; transform:translateY(0); }
+
+      .usp-pillar { background: var(--cream-2); border: 1px solid var(--rule); padding: 36px 32px; border-left: 4px solid var(--rule); border-radius: 12px; display: flex; flex-direction: column; gap: 12px; opacity:0; transform:translateX(20px); transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--del,0s), opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--del,0s), border-color 0.3s ease, background 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+      deck-stage > section[data-deck-active] .usp-pillar { opacity:1; transform:translateX(0); }
+      .usp-pillar:hover { background: #fff; border-left-color: var(--green); box-shadow: 0 12px 24px rgba(30,95,62,0.08); transform: translateX(-8px) scale(1.02); z-index:2;}
+      
+      .usp-pillar-title { font-family: 'DM Serif Display', serif; font-size: 34px; color: var(--ink); display:flex; align-items:center; gap:16px;}
+      .usp-pillar-title svg { color: var(--green); }
+      .usp-pillar-desc { font-size: 18px; color: var(--ink-muted); line-height: 1.5; font-family: 'Inter', sans-serif;}
+    deck-stage > section[data-deck-active] .usp-tag { opacity:1; transform:translateY(0); }
+    </style>
+
+    <div class="usp-layout">
+      <div class="usp-left">
+        <div class="usp-tag" style="margin-bottom:24px; display:inline-flex; align-items:center; font-family:'JetBrains Mono', monospace; font-size:16px; color:var(--green); letter-spacing:0.1em; text-transform:uppercase; border:1px solid rgba(30,95,62,0.2); padding:8px 16px; border-radius:30px; background:rgba(30,95,62,0.05); opacity:0; transform:translateY(10px); transition:opacity 0.8s ease 0s, transform 0.8s ease 0s;">The Defensible Moat</div>
+        
+        <div class="usp-big" style="font-size: 90px; line-height: 1.05;">The ultimate <em>End-to-End Factory</em> for low-resource AI.</div>
+        <div class="usp-sub">A closed-loop proprietary data engine purpose-built for the hardest languages on Earth.</div>
+
+        <style>
+          .vision-track { margin-top: 48px; display: flex; flex-direction: column; gap: 18px; opacity: 0; transform: translateY(15px); transition: opacity 0.8s ease 0.5s, transform 0.8s ease 0.5s; background: var(--cream-2); border: 1px solid var(--rule); padding: 32px; border-radius: 12px;}
+          deck-stage > section[data-deck-active] .vision-track { opacity: 1; transform: translateY(0); }
+          .vt-num { border-radius: 6px; font-size: 13px; font-family: 'JetBrains Mono', monospace; font-weight: 700; letter-spacing: 0.05em; padding: 6px 12px; text-transform: uppercase; }
+          .vt-step { display: flex; align-items: center; gap: 16px; font-size: 18px; font-family: 'Inter', sans-serif;}
+        </style>
+
+        <div class="vision-track">
+          <div style="font-family:'JetBrains Mono', monospace; font-size:14px; text-transform:uppercase; color:var(--ink-faint); letter-spacing:0.1em; margin-bottom:4px; font-weight:600;">Path to Massive Scale</div>
+          
+          <div class="vt-step" style="font-weight:600; color:var(--ink);">
+            <div class="vt-num" style="background:var(--green); color:var(--cream);">Phase 1</div>
+            Dominating African Languages
+          </div>
+          
+          <div class="vt-step" style="font-weight:500; color:var(--ink-muted);">
+            <div class="vt-num" style="background:#fff; border:1px solid var(--rule); color:var(--ink-faint);">Phase 2</div>
+            Global Low-Resource Languages Map
+          </div>
+          
+          <div class="vt-step" style="font-weight:500; color:var(--ink-muted);">
+            <div class="vt-num" style="background:#fff; border:1px solid var(--rule); color:var(--ink-faint);">Phase 3</div>
+            <b>The First African AI Frontier Lab</b>
+          </div>
+        </div>
+      </div>
+      
+      <div class="usp-right">
+        <div class="usp-pillar" style="--del:0.2s;">
+          <div class="usp-pillar-title">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Automated & Fast Execution
+          </div>
+          <div class="usp-pillar-desc">Proprietary internal engines (ASR/TTS) instantly reduce manual dependencies, ensuring incredibly fast data velocity.</div>
+        </div>
+
+        <div class="usp-pillar" style="--del:0.4s;">
+          <div class="usp-pillar-title">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+            Elite Native Experts
+          </div>
+          <div class="usp-pillar-desc">Our massive, vetted on-ground network provides the cultural QA and accuracy that generic gig marketplaces simply cannot replicate.</div>
+        </div>
+        
+        <div class="usp-pillar" style="--del:0.6s;">
+          <div class="usp-pillar-title">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            Built by Model Builders
+          </div>
+          <div class="usp-pillar-desc">We build and train AI models ourselves. We understand this problem, and what training-ready data requires, more deeply than anyone else.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-num" style="bottom:24px;">08</div>
+  </section>
+
+</deck-stage>
+
+</body>
+</html>
